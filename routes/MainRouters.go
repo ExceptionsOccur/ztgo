@@ -16,5 +16,6 @@ func Run() {
 	addZerotierNetworkRoutes(v1)
 	addZerotierControllerRoutes(v1)
 	addSystemRoutes(v1)
+	addWebsocketRoutes(v1)
 	router.Run(":8000")
 }
