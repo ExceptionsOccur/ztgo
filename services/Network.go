@@ -1,7 +1,6 @@
 package services
 
 import (
-	"net/http"
 	"ztgo/requests"
 	"ztgo/utils"
 
@@ -9,28 +8,28 @@ import (
 )
 
 func GetAllNetworkType(ctx *gin.Context) {
-	allNetworkType := requests.GetAllNetworkType()
-	ctx.JSON(http.StatusOK, allNetworkType)
+	utils.ZTResponseOK(ctx, requests.GetAllNetworkType())
 }
 func JoinToNetwork(ctx *gin.Context) {
 	postData := utils.GetPostData[string, string](ctx)
 
 	if nwid, ok := postData["nwid"]; ok {
-		ctx.JSON(http.StatusOK, requests.JoinToNetwork(nwid))
+		utils.ZTResponseOK(ctx, requests.JoinToNetwork(nwid))
 		return
 	}
-	ctx.JSON(http.StatusOK, map[string]string{
-		"msg": "提交的数据不合法",
-	})
+	utils.ZTResponseDataError(ctx)
 
 }
 func LeaveNetwork(ctx *gin.Context) {
 	postData := utils.GetPostData[string, string](ctx)
-	if nwid, ok := postData["nwid"]; ok {
-		ctx.JSON(http.StatusOK, requests.LeaveNetwork(nwid))
+	if _, ok := postData["nwid"]; !ok {
+		utils.ZTResponseDataError(ctx)
 		return
 	}
-	ctx.JSON(http.StatusOK, map[string]string{
-		"msg": "提交的数据不合法",
-	})
+	if _, ok := postData["id"]; !ok {
+		utils.ZTResponseDataError(ctx)
+		return
+	}
+	utils.ZTResponseOK(ctx, requests.LeaveNetwork(postData["nwid"]))
+	requests.DeleteMember(postData["nwid"], postData["id"])
 }

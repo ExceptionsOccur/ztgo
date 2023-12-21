@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"os"
 	"ztgo/secure"
 	"ztgo/utils"
@@ -81,27 +80,17 @@ func Validate(code string) bool {
 func ValidateTOTPCode(ctx *gin.Context) {
 	postData := utils.GetPostData[string, string](ctx)
 	if _, ok := postData["passcode"]; !ok {
-		ctx.JSON(http.StatusOK, gin.H{
-			"code": 2001,
-			"msg":  "无效的参数",
-		})
+		utils.ZTResponseDataError(ctx)
 		return
 	}
 	check := Validate(postData["passcode"])
 	if !check {
-		ctx.JSON(http.StatusOK, gin.H{
-			"code": 2003,
-			"msg":  "校验码错误",
-		})
+		utils.ZTResponseAuthInvalid(ctx)
 		return
 	}
 
 	token, _ := secure.MakeToken(Username)
 	// ctx.SetSameSite(http.SameSiteNoneMode)
 	// ctx.SetCookie("token", token, 60*60*3, "/", ctx.GetHeader("host"), false, false)
-	ctx.JSON(http.StatusOK, gin.H{
-		"code":  2000,
-		"msg":   "success",
-		"token": token,
-	})
+	utils.ZTResponseAuthorizedOK(ctx, token)
 }

@@ -2,7 +2,6 @@ package services
 
 import (
 	"encoding/json"
-	"net/http"
 	"ztgo/requests"
 	"ztgo/utils"
 
@@ -10,53 +9,43 @@ import (
 )
 
 func GetAllControllerType(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, requests.GetAllControllerType())
+	utils.ZTResponseOK(ctx, requests.GetAllControllerType())
 }
 
 func GetMemberType(ctx *gin.Context) {
 	postData := utils.GetPostData[string, string](ctx)
 	if _, ok := postData["nwid"]; !ok {
-		ctx.JSON(http.StatusOK, map[string]string{
-			"msg": "提交的数据不合法",
-		})
+		utils.ZTResponseDataError(ctx)
 		return
 	}
 	if _, ok := postData["mid"]; !ok {
-		ctx.JSON(http.StatusOK, map[string]string{
-			"msg": "提交的数据不合法",
-		})
+		utils.ZTResponseDataError(ctx)
 		return
 	}
-	ctx.JSON(http.StatusOK, requests.GetMemberType(postData["nwid"], postData["mid"]))
+	utils.ZTResponseOK(ctx, requests.GetMemberType(postData["nwid"], postData["mid"]))
 }
 
 func GetAllMembersTypeByNwid(ctx *gin.Context) {
 	postData := utils.GetPostData[string, string](ctx)
 	if _, ok := postData["nwid"]; !ok {
-		ctx.JSON(http.StatusOK, map[string]string{
-			"msg": "提交的数据不合法",
-		})
+		utils.ZTResponseDataError(ctx)
 		return
 	}
-	ctx.JSON(http.StatusOK, requests.GetAllMembersTypeByNwid(postData["nwid"]))
+	utils.ZTResponseOK(ctx, requests.GetAllMembersTypeByNwid(postData["nwid"]))
 }
 
 func UpdateController(ctx *gin.Context) {
 	postData := utils.GetPostData[string, interface{}](ctx)
 	if _, ok := postData["nwid"]; !ok {
-		ctx.JSON(http.StatusOK, map[string]string{
-			"msg": "提交的数据不合法",
-		})
+		utils.ZTResponseDataError(ctx)
 		return
 	}
 	dataJson, err := json.Marshal(postData)
 	if err != nil {
-		ctx.JSON(http.StatusOK, map[string]string{
-			"msg": "提交的数据不合法",
-		})
+		utils.ZTResponseDataError(ctx)
 		return
 	}
-	ctx.JSON(http.StatusOK, requests.UpdateController(string(dataJson)))
+	utils.ZTResponseOK(ctx, requests.UpdateController(string(dataJson)))
 }
 
 func CreateController(ctx *gin.Context) {
@@ -65,68 +54,54 @@ func CreateController(ctx *gin.Context) {
 	if netName, ok := postData["name"]; ok {
 		name = netName
 	}
-	ctx.JSON(http.StatusOK, requests.CreateController(name))
+	utils.ZTResponseOK(ctx, requests.CreateController(name))
 }
 
 func DeleteController(ctx *gin.Context) {
 	postData := utils.GetPostData[string, string](ctx)
 	if _, ok := postData["nwid"]; !ok {
-		ctx.JSON(http.StatusOK, map[string]string{
-			"msg": "提交的数据不合法",
-		})
+		utils.ZTResponseDataError(ctx)
 		return
 	}
-	ctx.JSON(http.StatusOK, requests.DeleteController(postData["nwid"]))
+	utils.ZTResponseOK(ctx, requests.DeleteController(postData["nwid"]))
 }
 
 func CountMembers(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, requests.CountMembers())
+	utils.ZTResponseOK(ctx, requests.CountMembers())
 }
 
 func UpdateMember(ctx *gin.Context) {
 	postData := utils.GetPostData[string, interface{}](ctx)
 	if _, ok := postData["nwid"]; !ok {
-		ctx.JSON(http.StatusOK, map[string]string{
-			"msg": "提交的数据不合法",
-		})
+		utils.ZTResponseDataError(ctx)
 		return
 	}
 	if _, ok := postData["id"]; !ok {
-		ctx.JSON(http.StatusOK, map[string]string{
-			"msg": "提交的数据不合法",
-		})
+		utils.ZTResponseDataError(ctx)
 		return
 	}
 	dataJson, err := json.Marshal(postData)
 	if err != nil {
-		ctx.JSON(http.StatusOK, map[string]string{
-			"msg": "提交的数据不合法",
-		})
+		utils.ZTResponseDataError(ctx)
 		return
 	}
-	ctx.JSON(http.StatusOK, requests.UpdateMember(string(dataJson)))
+	utils.ZTResponseOK(ctx, requests.UpdateMember(string(dataJson)))
 }
 
 func DeleteMember(ctx *gin.Context) {
 	postData := utils.GetPostData[string, interface{}](ctx)
 	if _, ok := postData["nwid"]; !ok {
-		ctx.JSON(http.StatusOK, map[string]string{
-			"msg": "提交的数据不合法",
-		})
+		utils.ZTResponseDataError(ctx)
 		return
 	}
 	if _, ok := postData["id"]; !ok {
-		ctx.JSON(http.StatusOK, map[string]string{
-			"msg": "提交的数据不合法",
-		})
+		utils.ZTResponseDataError(ctx)
 		return
 	}
 	_, err := json.Marshal(postData)
 	if err != nil {
-		ctx.JSON(http.StatusOK, map[string]string{
-			"msg": "提交的数据不合法",
-		})
+		utils.ZTResponseDataError(ctx)
 		return
 	}
-	ctx.JSON(http.StatusOK, requests.DeleteMember(postData["nwid"].(string), postData["id"].(string)))
+	utils.ZTResponseOK(ctx, requests.DeleteMember(postData["nwid"].(string), postData["id"].(string)))
 }

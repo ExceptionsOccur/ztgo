@@ -1,7 +1,7 @@
 package services
 
 import (
-	"net/http"
+	"ztgo/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/shirou/gopsutil/cpu"
@@ -38,5 +38,5 @@ func GetSystemInfo(ctx *gin.Context) {
 	} else {
 		sysInfo["load"] = load
 	}
-	ctx.JSON(http.StatusOK, sysInfo)
+	utils.ZTResponseOK(ctx, sysInfo)
 }
